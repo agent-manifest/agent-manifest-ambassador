@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Manifest Ambassador v0.1</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="shell">
+
+  <header class="header">
+    <div class="logo">
+      <div class="logo-mark"></div>
+      <div>
+        <div class="logo-title">Ambassador</div>
+        <div class="logo-sub">Agent Manifest Generator &middot; v0.1</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="status-badge">ONLINE</div>
+      <div class="doi-tag">agent-manifest-spec.org</div>
+    </div>
+  </header>
+
+  <div class="chat" id="chat"></div>
+
+  <div class="input-area">
+    <div class="input-label" id="inputLabel">Your response</div>
+    <div class="input-row">
+      <textarea class="input-field" id="inputField" placeholder="Type here and press Enter..." rows="1"></textarea>
+      <button class="send-btn" id="sendBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0a0c0f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>
