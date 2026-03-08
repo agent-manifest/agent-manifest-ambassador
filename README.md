@@ -23,6 +23,10 @@ Output: downloadable `.json` manifest conforming to agent-manifest-spec.org/v1
 - The Diplomat: registration gateway (coming)
 - Validator: schema validation SaaS (coming)
 
+## Live demo:
+
+https://hernancapucci.github.io/agent-manifest-ambassador/
+
 ## License
 
 CC BY 4.0
