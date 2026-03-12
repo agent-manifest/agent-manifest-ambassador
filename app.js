@@ -334,30 +334,25 @@ setTimeout(function() {
   });
 
   document.getElementById('submitBtn').addEventListener('click', function() {
-    var btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.textContent = 'Submitting...';
+    var title = 'Manifest submission: ' + manifest.identity;
 
-    fetch('https://agent-manifest-diplomat.vercel.app/api/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(obj)
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      if (data.status === 'accepted') {
-        btn.textContent = 'Registered';
-        btn.style.background = 'var(--accent)';
-        btn.style.color = '#000';
-      } else {
-        btn.textContent = 'Error: ' + (data.errors ? data.errors[0] : 'rejected');
-        btn.disabled = false;
-      }
-    })
-    .catch(function() {
-      btn.textContent = 'Connection error';
-      btn.disabled = false;
-    });
+    var body =
+      '## Agent Identity\n\n' +
+      'Agent name: ' + manifest.identity + '\n\n' +
+      '## Manifest JSON\n\n' +
+      '```json\n' +
+      jsonStr +
+      '\n```\n\n' +
+      '## Additional notes\n\n' +
+      'Submitted via Agent Manifest Ambassador v0.1.0';
+
+    var url =
+      'https://github.com/hernancapucci/agent-manifest-dataset/issues/new' +
+      '?template=manifest_submission.md' +
+      '&title=' + encodeURIComponent(title) +
+      '&body=' + encodeURIComponent(body);
+
+    window.open(url, '_blank');
   });
 
 }, 400);
