@@ -364,7 +364,7 @@ function generateManifest() {
               btn.style.background = 'var(--accent)';
               btn.style.color = '#000';
             } else {
-              btn.textContent = 'Error: ' + (data.errors ? data.errors[0] : 'rejected');
+              btn.textContent = 'Error: ' + (data.errors ? data.errors[0] : (data.message || 'rejected'));
               btn.disabled = false;
             }
           })
