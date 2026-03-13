@@ -362,7 +362,7 @@ function generateManifest() {
             if (data.status === 'accepted') {
               btn.textContent = 'Registered';
               btn.style.background = 'var(--accent)';
-              btn.style.color = '#000';
+              btn.style.color = '#fff';
             } else {
               btn.textContent = 'Error: ' + (data.errors ? data.errors[0] : (data.message || 'rejected'));
               btn.disabled = false;
