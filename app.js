@@ -267,7 +267,7 @@ function generateManifest() {
 
     var iso = new Date().toISOString().split('T')[0];
     var obj = {
-      "$schema": "https://agent-manifest-spec.org/spec/v1.0/schema.json"
+      "$schema": "https://agent-manifest-spec.org/schema/v1/manifest.schema.json",
       "manifest_version": "1.0",
       "agent_id": manifest.identity.toLowerCase().replace(/\s+/g, "-"),
       "agent_name": manifest.identity,
