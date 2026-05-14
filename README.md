@@ -25,7 +25,7 @@ Output: downloadable `.json` manifest conforming to agent-manifest-spec.org/v1
 
 ## Live demo:
 
-https://hernancapucci.github.io/agent-manifest-ambassador/
+https://agent-manifest.github.io/agent-manifest-ambassador/
 
 ## License
 
