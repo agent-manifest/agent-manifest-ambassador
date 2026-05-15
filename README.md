@@ -20,8 +20,8 @@ Output: downloadable `.json` manifest conforming to agent-manifest-spec.org/v1
 
 - Spec: https://agent-manifest-spec.org
 - DOI: 10.5281/zenodo.18833956
-- The Diplomat: registration gateway (coming)
-- Validator: schema validation SaaS (coming)
+- The Diplomat: registration gateway — https://github.com/agent-manifest/agent-manifest-diplomat
+- Validator: schema validation (coming)
 
 ## Live demo:
 
