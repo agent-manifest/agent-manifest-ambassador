@@ -66,9 +66,10 @@ The Ambassador walks a user through declaration stages:
 
 1. Identity
 2. Purpose
-3. Capabilities
-4. Boundaries
-5. Autonomy level
+3. Forbidden actions
+4. Autonomy
+5. Governance
+6. Compliance
 
 Output: downloadable `.json` manifest conforming to `agent-manifest-spec.org/v1`.
 
