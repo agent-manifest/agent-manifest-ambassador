@@ -1,0 +1,37 @@
+# Agent Manifest Ambassador
+
+A guided interface for generating Agent Manifest v1.0 declarations.
+
+## Canonical URL
+
+https://agent-manifest.github.io/agent-manifest-ambassador/
+
+## Source repository
+
+https://github.com/agent-manifest/agent-manifest-ambassador
+
+## What it does
+
+Ambassador is a conversational generator that produces Agent Manifest v1.0
+JSON declarations. It guides users through each required field and outputs
+a declaration ready for submission to the Diplomat registration API.
+
+It is a tool, not the specification. The specification lives at:
+https://agent-manifest-spec.org/
+
+## Specification
+
+- Spec:       https://agent-manifest-spec.org/spec/v1.0/agent_manifest_v1.0.html
+- JSON Schema: https://agent-manifest-spec.org/spec/v1.0/schema.json
+- DOI:        https://doi.org/10.5281/zenodo.18833956
+- License:    CC BY 4.0
+- Author:     Hernán Alfredo Capucci
+- ORCID:      https://orcid.org/0009-0008-7216-3032
+
+## Ecosystem
+
+- Ambassador (this tool): https://agent-manifest.github.io/agent-manifest-ambassador/
+- Diplomat API:           https://agent-manifest-diplomat.vercel.app/api/register
+- Dataset:                https://github.com/agent-manifest/agent-manifest-dataset
+- Registry:               https://agent-manifest-spec.org/.well-known/agent-manifest-registry.json
+- Organization:           https://github.com/agent-manifest
