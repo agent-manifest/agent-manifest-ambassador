@@ -565,7 +565,13 @@ function processStep(s, val) {
         setTimeout(unlock, 500);
         break;
       }
-      manifest.retention = retention;
+      var normalizedRetention = normalizeRetention(retention);
+      if (normalizedRetention === null) {
+        addRow('ambassador', 'Retention must be "none", "temporary_session_only", or an ISO 8601 duration (e.g. P30D, P1Y, PT12H). Please try again.');
+        setTimeout(unlock, 500);
+        break;
+      }
+      manifest.retention = normalizedRetention;
       step = 13;
 
       addRow('ambassador', 'Retention: <span class="chip">' + escapeHtml(manifest.retention) + '</span>.');
@@ -727,6 +733,7 @@ function generateManifest() {
     if (!obj.forbidden_actions || obj.forbidden_actions.length === 0) errors.push('forbidden_actions empty');
     if (typeof obj.autonomy.level !== 'number') errors.push('autonomy.level must be integer');
     if (typeof obj.data_handling.stores_personal_data !== 'boolean') errors.push('stores_personal_data must be boolean');
+    if (obj.data_handling.stores_personal_data === true && normalizeRetention(obj.data_handling.retention) === null) errors.push('retention must be "none", "temporary_session_only", or an ISO 8601 duration');
     if (!obj.stopping_authority.stoppable_by || obj.stopping_authority.stoppable_by.length === 0) errors.push('stoppable_by missing');
     if (!obj.stopping_authority.mechanism) errors.push('stopping mechanism missing');
     if (!obj.audit_surface.logging) errors.push('audit logging missing');
@@ -902,6 +909,19 @@ function escapeJs(str) {
   return String(str)
     .replace(/\\/g, '\\\\')
     .replace(/'/g, '\\\'');
+}
+
+// Validate data_handling.retention against the v1.0 schema.
+// Allowed: "none", "temporary_session_only", or an ISO 8601 duration
+// (P30D, P1Y, PT12H...). Freeform labels like "30d" or "persistent" are rejected.
+// Returns the schema-canonical value on success, or null if invalid.
+var ISO8601_DURATION = /^P(?!$)(\d+Y)?(\d+M)?(\d+D)?(T(\d+H)?(\d+M)?(\d+S)?)?$/;
+function normalizeRetention(value) {
+  var s = String(value).trim();
+  var lower = s.toLowerCase();
+  if (lower === 'none' || lower === 'temporary_session_only') return lower;
+  if (s.length <= 120 && ISO8601_DURATION.test(s)) return s;
+  return null;
 }
 
 init();
