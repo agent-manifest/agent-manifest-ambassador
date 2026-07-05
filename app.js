@@ -766,7 +766,7 @@ function generateManifest() {
           '</div>' +
           '<div class="next-steps">' +
             '<div class="next-steps-label">Next steps</div>' +
-            '<div>&#8594; Validate at <span class="chip">agent-manifest-spec.org/validate</span></div>' +
+            '<div>&#8594; Validate against <span class="chip">agent-manifest-spec.org/spec/v1.0/schema.json</span></div>' +
             '<div>&#8594; Submit to <span class="chip">The Diplomat</span> to register your agent</div>' +
             '<div>&#8594; Cite: <span style="color:var(--text-faint);font-size:11px">DOI 10.5281/zenodo.18833956</span></div>' +
           '</div>' +
@@ -875,7 +875,7 @@ function restartSession() {
 function init() {
   lock();
 
-  addRow('system', 'Initializing Agent Manifest Ambassador v0.2');
+  addRow('system', 'Initializing Agent Manifest Ambassador v0.1');
   addRow('system', 'Protocol: declaration-first · Schema: agent-manifest-spec.org/spec/v1.0', 'system', 400);
 
   setTimeout(function () {
