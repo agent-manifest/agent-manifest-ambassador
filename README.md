@@ -54,8 +54,8 @@ Ambassador  →  Diplomat  →  Dataset  →  Registry / Discovery
 ```
 
 - **Ambassador** — the user generates a manifest interactively
-- **Diplomat** — receives the submission and performs lightweight pre-write checks
-- **Dataset** — performs full v1.0 schema validation and stores accepted manifests
+- **Diplomat** — validates the submission against the full v1.0 JSON Schema and rejects duplicate `agent_id`s
+- **Dataset** — stores accepted manifests append-only; its issue-based submission workflow validates against the same schema
 - **Registry / Discovery** — the canonical `.well-known` endpoint surfaces recorded manifests to external consumers
 
 -----
@@ -71,7 +71,7 @@ The Ambassador walks a user through declaration stages:
 5. Governance
 6. Compliance
 
-Output: downloadable `.json` manifest conforming to `agent-manifest-spec.org/v1`.
+Output: downloadable `.json` manifest conforming to https://agent-manifest-spec.org/spec/v1.0/schema.json.
 
 -----
 
@@ -93,7 +93,7 @@ https://agent-manifest.github.io/agent-manifest-ambassador/
 
 - Specification DOI: [10.5281/zenodo.18833956](https://doi.org/10.5281/zenodo.18833956)
 - Diplomat repository: https://github.com/agent-manifest/agent-manifest-diplomat
-- Validator: schema validation (coming)
+- Validator: [agent-manifest-cli](https://github.com/agent-manifest/agent-manifest-cli) — full v1.0 schema validation
 
 -----
 
