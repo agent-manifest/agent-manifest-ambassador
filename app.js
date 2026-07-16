@@ -883,7 +883,7 @@ function init() {
     addRow('ambassador', 'Hello.', 'system', 100);
     addRow('ambassador', 'I\'m the <span class="chip">Ambassador</span> – a generator for Agent Manifest declarations.', 'system', 600);
     addRow('ambassador', 'An Agent Manifest is a structured JSON declaration describing an agent\'s identity, purpose, constraints, autonomy, risk, and accountability.', 'system', 1200);
-    addRow('ambassador', 'I\'ll guide you through six declaration steps. At the end, you\'ll have a valid v1.0 manifest.', 'system', 1900);
+    addRow('ambassador', 'I\'ll guide you through six declaration steps. At the end, you\'ll have a complete v1.0 manifest, validated on submission.', 'system', 1900);
 
     setTimeout(function () {
       addStepBar('step 1 / 6 -- identity', 0);
