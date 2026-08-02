@@ -65,6 +65,11 @@
   </div>
 
 </div>
+<!-- The Agent Manifest v1.0 schema and validator, built from the published
+     packages by build.mjs and served from this repository. No CDN: the page
+     depends on no third party being up. It must load before app.js, which
+     reads every rule it enforces out of the schema. -->
+<script src="vendor/agent-manifest-v1.0.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

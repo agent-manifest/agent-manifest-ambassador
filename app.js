@@ -1,3 +1,38 @@
+// The specification, as data. Loaded by vendor/agent-manifest-v1.0.js, which is
+// built from @agent-manifest/schema and @agent-manifest/client — see build.mjs.
+//
+// This page used to carry the schema's rules written out by hand: the autonomy
+// range, the three enums, the field patterns and length bounds, and a final
+// check that re-implemented validation in JavaScript. All of it read correctly
+// on the day it was written, and none of it would have noticed if the
+// specification moved. Now every rule the interview enforces is read from the
+// schema below, and the closing check is the published validator itself.
+var SCHEMA = window.AgentManifest.schema;
+
+/** The schema fragment for a field, e.g. field('owner', 'type'). */
+function field() {
+  var node = SCHEMA;
+  for (var i = 0; i < arguments.length; i++) {
+    node = node.properties[arguments[i]];
+  }
+  return node;
+}
+
+/** The permitted values of an enum field, in the order the schema lists them. */
+function allowed() {
+  return field.apply(null, arguments).enum;
+}
+
+/** Whether a value is one of a field's permitted values. */
+function isAllowed(value, path) {
+  return allowed.apply(null, path).indexOf(value) !== -1;
+}
+
+/** "none, basic, detailed" — for prompts, so they cannot contradict the schema. */
+function listAllowed() {
+  return allowed.apply(null, arguments).join(', ');
+}
+
 var chat = document.getElementById('chat');
 var inputField = document.getElementById('inputField');
 var sendBtn = document.getElementById('sendBtn');
@@ -157,10 +192,10 @@ function showAuditLoggingStep() {
     addRow('ambassador', 'How is this agent\'s activity logged?').then(function () {
       inputLabel.textContent = 'Audit logging';
       inputField.value = '';
-      inputField.placeholder = 'Or type: none, basic, detailed';
+      inputField.placeholder = 'Or type: ' + listAllowed('audit_surface', 'logging');
 
       setTimeout(function () {
-        var opts = ['none', 'basic', 'detailed'];
+        var opts = allowed('audit_surface', 'logging');
         var d = document.createElement('div');
         d.className = 'msg';
         var btns = '<div class="autonomy-opts">';
@@ -253,13 +288,13 @@ function processStep(s, val) {
       break;
 
     case 2: // purpose.primary_code
-      // Schema pattern: ^[a-z0-9._-]+$ with minLength: 2
+      var codeRule = field('purpose', 'primary_code');
       var rawCode = String(val).trim().toLowerCase()
         .replace(/[^a-z0-9._-]/g, '-')
         .replace(/-{2,}/g, '-')
         .replace(/^-+|-+$/g, '');
-      if (!rawCode || rawCode.length < 2) {
-        addRow('ambassador', 'Purpose code must be at least 2 characters (lowercase letters, digits, . _ - only). Please try again.');
+      if (!rawCode || rawCode.length < codeRule.minLength || !new RegExp(codeRule.pattern).test(rawCode)) {
+        addRow('ambassador', 'Purpose code must be at least ' + codeRule.minLength + ' characters (lowercase letters, digits, . _ - only). Please try again.');
         setTimeout(unlock, 500);
         break;
       }
@@ -299,12 +334,13 @@ function processStep(s, val) {
       setTimeout(unlock, 700);
       break;
 
-    case 4: // forbidden_actions  (array, minItems: 1, each minLength: 2)
+    case 4: // forbidden_actions
+      var actionRule = field('forbidden_actions');
       var actions = String(val).split(/[\n,]/)
         .map(function (a) { return a.trim(); })
-        .filter(function (a) { return a.length >= 2; });
-      if (actions.length === 0) {
-        addRow('ambassador', 'At least one forbidden action is required (min 2 characters each). Please try again.');
+        .filter(function (a) { return a.length >= actionRule.items.minLength; });
+      if (actions.length < actionRule.minItems) {
+        addRow('ambassador', 'At least one forbidden action is required (min ' + actionRule.items.minLength + ' characters each). Please try again.');
         setTimeout(unlock, 500);
         break;
       }
@@ -345,8 +381,9 @@ function processStep(s, val) {
       break;
 
     case 5: // autonomy.level  (integer 0-3)
+      var autonomyLevel = field('autonomy', 'level');
       var level = typeof val === 'number' ? val : parseInt(String(val), 10);
-      if (isNaN(level) || level < 0 || level > 3) {
+      if (isNaN(level) || level < autonomyLevel.minimum || level > autonomyLevel.maximum) {
         addRow('ambassador', 'Autonomy level must be 0, 1, 2, or 3. Please try again.');
         setTimeout(unlock, 500);
         break;
@@ -360,10 +397,10 @@ function processStep(s, val) {
 
       inputLabel.textContent = 'Owner type';
       inputField.value = '';
-      inputField.placeholder = 'Or type: individual, organization, system';
+      inputField.placeholder = 'Or type: ' + listAllowed('owner', 'type');
 
       setTimeout(function () {
-        var types = ['individual', 'organization', 'system'];
+        var types = allowed('owner', 'type');
         var d = document.createElement('div');
         d.className = 'msg';
         var btns = '<div class="autonomy-opts">';
@@ -382,10 +419,10 @@ function processStep(s, val) {
       }, 700);
       break;
 
-    case 6: // owner.type  (enum: individual | organization | system)
+    case 6: // owner.type
       var ownerType = String(val).trim().toLowerCase();
-      if (ownerType !== 'individual' && ownerType !== 'organization' && ownerType !== 'system') {
-        addRow('ambassador', 'Owner type must be one of: individual, organization, system. Please try again.');
+      if (!isAllowed(ownerType, ['owner', 'type'])) {
+        addRow('ambassador', 'Owner type must be one of: ' + listAllowed('owner', 'type') + '. Please try again.');
         setTimeout(unlock, 500);
         break;
       }
@@ -447,10 +484,11 @@ function processStep(s, val) {
       setTimeout(unlock, 700);
       break;
 
-    case 9: // stopping_authority.mechanism  (minLength: 5)
+    case 9: // stopping_authority.mechanism
+      var mechanismRule = field('stopping_authority', 'mechanism');
       var mechanism = String(val).trim();
-      if (mechanism.length < 5) {
-        addRow('ambassador', 'Stopping mechanism must be at least 5 characters. Please be more specific.');
+      if (mechanism.length < mechanismRule.minLength) {
+        addRow('ambassador', 'Stopping mechanism must be at least ' + mechanismRule.minLength + ' characters. Please be more specific.');
         setTimeout(unlock, 500);
         break;
       }
@@ -463,10 +501,10 @@ function processStep(s, val) {
 
       inputLabel.textContent = 'Risk level';
       inputField.value = '';
-      inputField.placeholder = 'Or type: low, medium, high';
+      inputField.placeholder = 'Or type: ' + listAllowed('risk_profile', 'level');
 
       setTimeout(function () {
-        var riskLevels = ['low', 'medium', 'high'];
+        var riskLevels = allowed('risk_profile', 'level');
         var d = document.createElement('div');
         d.className = 'msg';
         var btns = '<div class="autonomy-opts">';
@@ -487,8 +525,8 @@ function processStep(s, val) {
 
     case 10: // risk_profile.level  (enum: low | medium | high)
       var riskLevel = String(val).trim().toLowerCase();
-      if (riskLevel !== 'low' && riskLevel !== 'medium' && riskLevel !== 'high') {
-        addRow('ambassador', 'Risk level must be one of: low, medium, high. Please try again.');
+      if (!isAllowed(riskLevel, ['risk_profile', 'level'])) {
+        addRow('ambassador', 'Risk level must be one of: ' + listAllowed('risk_profile', 'level') + '. Please try again.');
         setTimeout(unlock, 500);
         break;
       }
@@ -596,7 +634,7 @@ function processStep(s, val) {
       inputField.placeholder = 'Or type: none, partial, full';
 
       setTimeout(function () {
-        var reconOpts = ['none', 'partial', 'full'];
+        var reconOpts = allowed('audit_surface', 'reconstructability');
         var d = document.createElement('div');
         d.className = 'msg';
         var btns = '<div class="autonomy-opts">';
@@ -724,24 +762,19 @@ function generateManifest() {
       }
     };
 
-    // Final validation guard before display and submit
-    var errors = [];
-    if (!obj.agent_name) errors.push('agent_name missing');
-    if (!obj.agent_version) errors.push('agent_version missing');
-    if (!obj.owner.type || !obj.owner.identifier) errors.push('owner incomplete');
-    if (!obj.purpose.primary_code || !obj.purpose.description) errors.push('purpose incomplete');
-    if (!obj.forbidden_actions || obj.forbidden_actions.length === 0) errors.push('forbidden_actions empty');
-    if (typeof obj.autonomy.level !== 'number') errors.push('autonomy.level must be integer');
-    if (typeof obj.data_handling.stores_personal_data !== 'boolean') errors.push('stores_personal_data must be boolean');
-    if (obj.data_handling.stores_personal_data === true && normalizeRetention(obj.data_handling.retention) === null) errors.push('retention must be "none", "temporary_session_only", or an ISO 8601 duration');
-    if (!obj.stopping_authority.stoppable_by || obj.stopping_authority.stoppable_by.length === 0) errors.push('stoppable_by missing');
-    if (!obj.stopping_authority.mechanism) errors.push('stopping mechanism missing');
-    if (!obj.audit_surface.logging) errors.push('audit logging missing');
-    if (!obj.audit_surface.reconstructability) errors.push('reconstructability missing');
-    if (!obj.contact.email) errors.push('contact email missing');
-
-    if (errors.length > 0) {
-      addRow('ambassador', 'Manifest validation failed: ' + errors.join(', ') + '. Please restart and try again.');
+    // Final validation guard before display and submit.
+    //
+    // This used to be thirteen hand-written checks — one per field, each a
+    // rough restatement of a rule the schema already states exactly. It is now
+    // the published validator, the same one the Diplomat runs on submission, so
+    // a manifest that passes here cannot be rejected there for a reason this
+    // page never knew about.
+    var result = window.AgentManifest.validate(obj);
+    if (!result.schemaValid) {
+      var errors = result.errors.map(function (e) {
+        return e.path + ' ' + e.message;
+      });
+      addRow('ambassador', 'Manifest validation failed: ' + escapeHtml(errors.join(', ')) + '. Please restart and try again.');
       return;
     }
 
@@ -911,16 +944,29 @@ function escapeJs(str) {
     .replace(/'/g, '\\\'');
 }
 
-// Validate data_handling.retention against the v1.0 schema.
-// Allowed: "none", "temporary_session_only", or an ISO 8601 duration
-// (P30D, P1Y, PT12H...). Freeform labels like "30d" or "persistent" are rejected.
+// Normalise data_handling.retention to a value the schema accepts.
+//
+// The two named values and the duration pattern are read from the schema's own
+// anyOf, not written out here: a freeform label like "30d" or "persistent" is
+// rejected because the specification rejects it, not because this file says so.
 // Returns the schema-canonical value on success, or null if invalid.
-var ISO8601_DURATION = /^P(?!$)(\d+Y)?(\d+M)?(\d+D)?(T(\d+H)?(\d+M)?(\d+S)?)?$/;
+function retentionRules() {
+  var branches = field('data_handling', 'retention').anyOf;
+  var named = null;
+  var pattern = null;
+  branches.forEach(function (b) {
+    if (b.enum) named = b.enum;
+    if (b.pattern) pattern = b;
+  });
+  return { named: named, pattern: pattern };
+}
+
 function normalizeRetention(value) {
+  var rules = retentionRules();
   var s = String(value).trim();
   var lower = s.toLowerCase();
-  if (lower === 'none' || lower === 'temporary_session_only') return lower;
-  if (s.length <= 120 && ISO8601_DURATION.test(s)) return s;
+  if (rules.named.indexOf(lower) !== -1) return lower;
+  if (s.length <= rules.pattern.maxLength && new RegExp(rules.pattern.pattern).test(s)) return s;
   return null;
 }
 

@@ -1,0 +1,18 @@
+{
+  "name": "agent-manifest-ambassador",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A guided interface for generating Agent Manifest v1.0 declarations.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@agent-manifest/client": "0.1.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.10"
+  }
+}
