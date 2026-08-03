@@ -43,6 +43,26 @@ A v1.0-compliant `manifest.json` containing the required declaration fields:
 
 Output conforms to the published JSON Schema at https://agent-manifest-spec.org/spec/v1.0/schema.json.
 
+### The schema, and where it comes from
+
+This page used to carry the schema's rules written out by hand — the autonomy
+range, the enums, the field patterns and lengths, and a closing check that
+re-implemented validation in JavaScript. None of that is here any more.
+
+`vendor/agent-manifest-v1.0.js` is built from the published
+[`@agent-manifest/schema`](https://www.npmjs.com/package/@agent-manifest/schema)
+and [`@agent-manifest/client`](https://www.npmjs.com/package/@agent-manifest/client)
+packages, pinned to exact versions. Every rule the interview enforces is read
+from that schema at run time, and the closing check is the published validator —
+the same one the Diplomat runs on submission, so this page cannot accept a
+declaration the next step will reject for a reason it never knew about.
+
+The site is still static files: the artefact is committed, so nothing is built
+to serve it. Rebuild it with `npm ci && npm run build`; CI rebuilds it from the
+pinned dependencies and fails if the committed file differs by a byte. It is not
+loaded from a CDN — a third party serving different bytes would change what this
+page accepts, silently.
+
 -----
 
 ## Submission flow

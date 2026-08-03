@@ -1,0 +1,64 @@
+name: CI
+
+# This repository serves static files. The one file it does not write by hand is
+# vendor/agent-manifest-v1.0.js, built from the published @agent-manifest
+# packages. A committed build artefact is only trustworthy if something rebuilds
+# it and checks, so that is what this job does: it rebuilds from the pinned
+# dependencies and fails if the committed file differs by a single byte.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - run: npm ci
+
+      - name: The committed validator is what the pinned packages build
+        run: |
+          set -euo pipefail
+          before=$(sha256sum vendor/agent-manifest-v1.0.js | cut -d' ' -f1)
+          npm run build
+          after=$(sha256sum vendor/agent-manifest-v1.0.js | cut -d' ' -f1)
+          echo "committed: $before"
+          echo "rebuilt:   $after"
+          if [ "$before" != "$after" ]; then
+            echo "The committed artefact is not what the pinned packages build."
+            echo "Run: npm ci && npm run build, and commit the result."
+            git --no-pager diff --stat
+            exit 1
+          fi
+
+      - name: No executable code is loaded from a third party
+        run: |
+          set -euo pipefail
+          # The validator and the schema decide whether a declaration is well
+          # formed. They are served from this repository, never from a CDN: a
+          # third party serving different bytes would change what this page
+          # accepts, silently.
+          #
+          # This checks scripts, not every external reference. index.html also
+          # links a webfont from fonts.googleapis.com. That is a real remaining
+          # third-party dependency and it is recorded as such — but it is a
+          # typeface, it cannot alter what the page validates, and removing it
+          # is a decision about how the page looks, not about this check.
+          if grep -nEi '<script[^>]+src="https?://' index.html; then
+            echo "index.html loads a script from another host."
+            exit 1
+          fi
+          grep -q 'src="vendor/agent-manifest-v1.0.js"' index.html
+
+      - run: npm test
