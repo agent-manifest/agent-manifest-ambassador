@@ -43,6 +43,11 @@ A v1.0-compliant `manifest.json` containing the required declaration fields:
 
 Output conforms to the published JSON Schema at https://agent-manifest-spec.org/spec/v1.0/schema.json.
 
+The strings you write into `forbidden actions` are free text: v1.0 defines no
+vocabulary for them, and no rule for matching them against anything. See
+[Known limits of v1.0](https://agent-manifest-spec.org/STABILITY.html#known-limits-of-v10)
+before settling on a style.
+
 ### The schema, and where it comes from
 
 This page used to carry the schema's rules written out by hand — the autonomy
