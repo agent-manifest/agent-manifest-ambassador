@@ -35,3 +35,10 @@ https://agent-manifest-spec.org/
 - Dataset:                https://github.com/agent-manifest/agent-manifest-dataset
 - Registry:               https://agent-manifest-spec.org/.well-known/agent-manifest-registry.json
 - Organization:           https://github.com/agent-manifest
+
+## Site credits
+
+- Website design and development: OwnSite Studio (https://ownsitestudio.com)
+- This credit covers the interface only. The Agent Manifest specification and
+  the research behind it are authored by Hernán Alfredo Capucci
+  (ORCID 0009-0008-7216-3032).

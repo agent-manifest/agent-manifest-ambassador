@@ -1,0 +1,12 @@
+/* TEAM */
+Interface design & development: OwnSite Studio
+Site: https://ownsitestudio.com
+
+/* AUTHOR */
+Agent Manifest specification and research: Hernán Alfredo Capucci
+ORCID: https://orcid.org/0009-0008-7216-3032
+
+/* SITE */
+Standards: HTML5, CSS3
+Components: no framework, no CDN; the v1.0 schema and validator are bundled
+from the published packages by build.mjs
