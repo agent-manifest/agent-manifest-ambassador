@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "A guided interface for generating Agent Manifest v1.0 declarations.",
-  "license": "MIT",
+  "license": "CC-BY-4.0",
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
