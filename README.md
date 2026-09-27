@@ -68,6 +68,11 @@ pinned dependencies and fails if the committed file differs by a byte. It is not
 loaded from a CDN — a third party serving different bytes would change what this
 page accepts, silently.
 
+The bundle contains code from other projects under their own licences
+(Apache-2.0, MIT, BSD-3-Clause, CC0), not under this repository's CC BY 4.0.
+The build writes their licence texts to `vendor/THIRD_PARTY_NOTICES.txt`, next
+to the bundle, and CI checks that file the same way.
+
 -----
 
 ## Submission flow
@@ -124,7 +129,9 @@ https://agent-manifest.github.io/agent-manifest-ambassador/
 
 ## License
 
-CC BY 4.0. See [`LICENSE`](./LICENSE).
+CC BY 4.0. See [`LICENSE`](./LICENSE). The third-party code bundled in
+`vendor/agent-manifest-v1.0.js` keeps its own licences; see
+[`vendor/THIRD_PARTY_NOTICES.txt`](./vendor/THIRD_PARTY_NOTICES.txt).
 
 ---
 
